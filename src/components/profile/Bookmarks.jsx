@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bookmark, BookOpen, Trash2, ExternalLink } from "lucide-react";
+import { Bookmark, BookOpen, Trash2, ExternalLink, BookmarkX } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -118,13 +119,13 @@ export default function Bookmarks() {
       </CardHeader>
       <CardContent>
         {bookmarks.length === 0 ? (
-          <div className="text-center py-8">
-            <Bookmark className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-            <p className="text-muted-foreground">No bookmarks yet</p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
-              Bookmark chapters to quickly access them later
-            </p>
-          </div>
+          <EmptyState
+            title="No bookmarks yet"
+            description="Bookmark chapters to quickly access them later. Your favorite learning content will appear here."
+            icon={BookmarkX}
+            actionLabel="Browse Courses"
+            actionHref="/courses"
+          />
         ) : (
           <div className="space-y-3">
             {bookmarks.map((bookmark) => (
