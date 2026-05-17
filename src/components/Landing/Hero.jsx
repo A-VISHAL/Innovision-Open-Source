@@ -1,13 +1,22 @@
 import Image from "next/image";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { ArrowRight, Play, Sparkles, Zap, BookOpen, Trophy, Users, Globe, Flame } from "lucide-react";
+import { ArrowRight, Play, Sparkles, BookOpen, Trophy, Users, Globe } from "lucide-react";
 import AnimatedCounter from "./AnimatedCounter";
 import MagneticButton from "./MagneticButton";
-import landingTheme, { getAnimationDelay } from "@/lib/landing-theme";
+import landingTheme from "@/lib/landing-theme";
+
+const marqueeFeatures = [
+  { icon: "⚡", label: "XP & Levels", color: "#eab308", start: "rgba(234, 179, 8, 0.26)", end: "rgba(251, 191, 36, 0.08)" },
+  { icon: "🔥", label: "Daily Streaks", color: "#f97316", start: "rgba(249, 115, 22, 0.24)", end: "rgba(251, 146, 60, 0.08)" },
+  { icon: "🏆", label: "Badges", color: "#f59e0b", start: "rgba(245, 158, 11, 0.24)", end: "rgba(252, 211, 77, 0.08)" },
+  { icon: "🥇", label: "Leaderboard", color: "#10b981", start: "rgba(16, 185, 129, 0.24)", end: "rgba(45, 212, 191, 0.08)" },
+  { icon: "🎯", label: "Smart Goals", color: "#ec4899", start: "rgba(236, 72, 153, 0.24)", end: "rgba(217, 70, 239, 0.08)" },
+  { icon: "📈", label: "Progress Tracking", color: "#3b82f6", start: "rgba(59, 130, 246, 0.24)", end: "rgba(34, 211, 238, 0.08)" },
+];
 
 const Hero = () => {
-  const { colors, animations, effects, typography, components, stats, trustBadges, featureHighlights } = landingTheme;
+  const { colors, animations, effects, typography, components, stats, trustBadges } = landingTheme;
 
   return (
     <section className="relative w-full min-h-[calc(100vh-64px)] flex items-center justify-center overflow-hidden px-4">
@@ -78,24 +87,38 @@ const Hero = () => {
             our AI creates structured, chapter-wise content tailored to your learning style.
           </p>
 
-          {/* Feature highlights with icons */}
+          {/* Feature marquee */}
           <div
-            className={`flex flex-wrap items-center justify-center ${landingTheme.spacing.gap.sm} mb-6 sm:mb-10 text-xs sm:text-sm text-muted-foreground animate-fade-in font-light`}
+            className="feature-marquee group mb-6 sm:mb-10 w-full max-w-5xl animate-fade-in"
             style={{ animationDelay: animations.delay.features }}
           >
-            {featureHighlights.map((item, i) => {
-              const icons = [Zap, Flame, Trophy, Globe];
-              const Icon = icons[i];
-              return (
-                <div key={i} className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 ${landingTheme.radius.full} border border-border bg-card/30 backdrop-blur-sm hover:bg-card/50 ${landingTheme.hover.scale.sm} transition-all duration-300`}>
-                  <Icon
-                    aria-hidden="true"
-                    className={`h-3 w-3 sm:h-4 sm:w-4 ${item.color}`}
-                  />
-                  <span>{item.text}</span>
-                </div>
-              );
-            })}
+            <div className="feature-marquee-viewport relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/20 px-2 sm:px-4 py-3 sm:py-4 backdrop-blur-xl shadow-lg shadow-black/5">
+              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 sm:w-20 bg-gradient-to-r from-background via-background/85 to-transparent" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 sm:w-20 bg-gradient-to-l from-background via-background/85 to-transparent" />
+
+              <div className="feature-marquee-track flex w-max items-center gap-3 sm:gap-4">
+                {[...marqueeFeatures, ...marqueeFeatures].map((item, index) => (
+                  <div
+                    key={`${item.label}-${index}`}
+                    className={`feature-marquee-card flex shrink-0 items-center gap-3 rounded-full border border-border/60 px-4 py-2.5 sm:px-5 sm:py-3 text-sm sm:text-base font-light text-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02]`}
+                    style={{
+                      backgroundImage: `linear-gradient(135deg, ${item.start}, ${item.end})`,
+                      backgroundColor: `${item.color}10`,
+                      boxShadow: `0 10px 30px ${item.color}12`,
+                    }}
+                  >
+                    <span
+                      className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/30 bg-white/60 text-base sm:text-lg backdrop-blur-sm"
+                      aria-hidden="true"
+                      style={{ color: item.color }}
+                    >
+                      {item.icon}
+                    </span>
+                    <span className="whitespace-nowrap">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* CTA Buttons */}
@@ -180,9 +203,30 @@ const Hero = () => {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
         }
+        @keyframes marquee {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          100% {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
         .animate-gradient {
           background-size: 200% 200%;
           animation: gradient 3s ease infinite;
+        }
+        .feature-marquee-track {
+          animation: marquee 28s linear infinite;
+          will-change: transform;
+        }
+        .feature-marquee:hover .feature-marquee-track {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .feature-marquee-track {
+            animation: none;
+            transform: translate3d(0, 0, 0);
+          }
         }
       `}</style>
     </section>
